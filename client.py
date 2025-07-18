@@ -30,6 +30,9 @@ try:
         msg = input()
         if msg.lower() == "exit":
             break
+        elif msg.lower() == 'randomito':
+            sio.emit("random")
+            continue
         sio.send(msg)
 except KeyboardInterrupt:
     pass

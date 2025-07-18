@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask_socketio import SocketIO, send, disconnect
-import os
+import os, random
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -29,6 +29,12 @@ def handle_message(msg):
     full_msg = f"{username}: {msg}"
     print(f"[ПОВІДОМЛЕННЯ] {full_msg}")
     send(full_msg, broadcast=True)
+
+@socketio.on('random')
+def generate_number():
+    resultNum = random.randint(0,100)
+    send(resultNum, broadcast=True)
+
 
 @socketio.on('disconnect')
 def handle_disconnect():
