@@ -14,6 +14,13 @@ def connect():
 def on_message(data):
     print(data)
 
+@sio.on("private_message")
+def send_message_private(data):
+    print(data)
+    receiver = input('Введіть прізвисько отримувача:\n')
+    # if data["receiver"] in data['clients']:
+    #     print(f"[SERVER] Active users: {', '.join(data['clients'])}", to=request.sid)
+
 @sio.event
 def disconnect():
     print("[❌] Кікнуто.")
@@ -35,6 +42,9 @@ try:
             continue
         elif msg.lower() == '/users':
             sio.emit("users")
+            continue
+        elif msg.lower() == '/private':
+            sio.emit("users", True)
             continue
         sio.send(msg)
 except KeyboardInterrupt:

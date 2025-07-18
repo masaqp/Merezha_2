@@ -37,9 +37,13 @@ def generate_number():
 
 
 @socketio.on('users')
-def list_users():
+def list_users(parameter=False):
     user_list = list(users.values())
     send(f"[SERVER] Active users: {', '.join(user_list)}", to=request.sid)
+    if parameter:
+        data = {'clients': users}
+        socketio.emit("private_message", data)
+        
 
 
 @socketio.on('disconnect')
