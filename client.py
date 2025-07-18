@@ -16,25 +16,10 @@ def on_message(data):
 
 @sio.on("private_message")
 def send_message_private(data):
-    print("[CLIENT] Received list of users for private message:", data)
+    print("[CLIENT] Received private message user list.")
+    global private_message_clients
+    private_message_clients = data['clients']
 
-    user_sid = ""
-
-    receiver = input('Введіть прізвисько отримувача:\n')
-    forwarded_msg = input('Лист отримувачу пишіть тут:\n')
-    for sid in data.get('clients'):
-        user = data.get('clients')[sid]
-        if user == receiver:
-            user_sid = sid
-            break
-
-    if not user_sid:
-        print("[CLIENT] No such user found.")
-        return
-
-    rcv_info = {"msg": forwarded_msg, 'rcver': user_sid}
-    print("[CLIENT] Sending message:", rcv_info)
-    sio.emit("send_dm", rcv_info)
 
 @sio.event
 def disconnect():
@@ -47,9 +32,12 @@ except Exception as e:
     print("[‼️] Трабли зі з'єднанням:", e)
     exit()
 
+private_message_clients = None  # global variable to track state
+
 try:
     while True:
         msg = input()
+
         if msg.lower() == "exit":
             break
         elif msg.lower() == 'randomito':
@@ -61,7 +49,28 @@ try:
         elif msg.lower() == '/private':
             sio.emit("users", 'start')
             continue
+
+        # Handle private message after receiving client list
+        if private_message_clients:
+            print("=== Direct Message Mode ===")
+            receiver = input('Введіть прізвисько отримувача:\n')
+            forwarded_msg = input('Лист отримувачу пишіть тут:\n')
+            user_sid = None
+            for sid, name in private_message_clients.items():
+                if name == receiver:
+                    user_sid = sid
+                    break
+            if user_sid:
+                rcv_info = {"msg": forwarded_msg, 'rcver': user_sid}
+                sio.emit("send_dm", rcv_info)
+            else:
+                print("User not found.")
+            private_message_clients = None  # reset the flag
+            continue
+
+        # Otherwise send normal message
         sio.send(msg)
+
 except KeyboardInterrupt:
     pass
 finally:
