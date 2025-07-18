@@ -40,7 +40,7 @@ def generate_number():
 def list_users(parameter=False):
     user_list = list(users.values())
     send(f"[SERVER] Active users: {', '.join(user_list)}", to=request.sid)
-    if parameter:
+    if parameter == 'start':
         data = {'clients': users}
         socketio.emit("private_message", data)
         

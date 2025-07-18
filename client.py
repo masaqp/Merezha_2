@@ -54,7 +54,7 @@ try:
             sio.emit("users")
             continue
         elif msg.lower() == '/private':
-            sio.emit("users", True)
+            sio.emit("users", 'start')
             continue
         sio.send(msg)
 except KeyboardInterrupt:
