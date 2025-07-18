@@ -45,6 +45,7 @@ def list_users(data=None):
     send(f"[SERVER] Active users: {', '.join(user_list)}", to=request.sid)
     
     if data == 'start':
+        print('emit success DMs')
         socketio.emit("private_message", {'clients': users})
         
 @socketio.on('send_dm')   
