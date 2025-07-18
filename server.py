@@ -51,7 +51,7 @@ def list_users(data=None):
         
 @socketio.on('send_dm')   
 def send_dm_msg(data):
-    send(f"Receiver: {data['rcver']}, message: {data["msg"]}", to=data['rcver'])
+    send(f"Receiver: {data['rcver']}, message: {data['msg']}", to=data['rcver'])
 
 @socketio.on('disconnect')
 def handle_disconnect():

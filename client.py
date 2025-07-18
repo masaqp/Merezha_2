@@ -16,6 +16,8 @@ def on_message(data):
 
 @sio.on("private_message")
 def send_message_private(data):
+    print("[CLIENT] Received list of users for private message:", data)
+
     user_sid = ""
 
     receiver = input('Введіть прізвисько отримувача:\n')
@@ -25,11 +27,14 @@ def send_message_private(data):
         if user == receiver:
             user_sid = sid
             break
+
+    if not user_sid:
+        print("[CLIENT] No such user found.")
+        return
+
     rcv_info = {"msg": forwarded_msg, 'rcver': user_sid}
-    print(rcv_info)
+    print("[CLIENT] Sending message:", rcv_info)
     sio.emit("send_dm", rcv_info)
-    # if data["receiver"] in data['clients']:
-    #     print(f"[SERVER] Active users: {', '.join(data['clients'])}", to=request.sid)
 
 @sio.event
 def disconnect():
