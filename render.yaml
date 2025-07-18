@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: python-socket-server
+    env: python
+    buildCommand: ""
+    startCommand: python server.py
+    plan: free
