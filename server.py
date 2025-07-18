@@ -38,8 +38,8 @@ def generate_number():
 
 @socketio.on('users')
 def list_users():
-    usernames = list(users.values())
-    socketio.emit("user_list", usernames)
+    user_list = list(users.values())
+    send(f"[SERVER] Active users: {', '.join(user_list)}", to=request.sid)
 
 
 @socketio.on('disconnect')
