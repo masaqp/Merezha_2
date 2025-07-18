@@ -16,8 +16,18 @@ def on_message(data):
 
 @sio.on("private_message")
 def send_message_private(data):
-    print(data)
+    user_sid = ""
+
     receiver = input('Введіть прізвисько отримувача:\n')
+    forwarded_msg = input('Лист отримувачу пишіть тут:\n')
+    for sid in data.get('clients'):
+        user = data.get('clients')[sid]
+        if user == receiver:
+            user_sid = sid
+            break
+    rcv_info = {"msg": forwarded_msg, 'rcver': user_sid}
+    print(rcv_info)
+    sio.emit("send_dm", rcv_info)
     # if data["receiver"] in data['clients']:
     #     print(f"[SERVER] Active users: {', '.join(data['clients'])}", to=request.sid)
 

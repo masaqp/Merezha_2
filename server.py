@@ -44,7 +44,9 @@ def list_users(parameter=False):
         data = {'clients': users}
         socketio.emit("private_message", data)
         
-
+@socketio.on('send_dm')   
+def send_dm_msg(data):
+    send(f"Receiver: {data['rcver']}, message: {data["msg"]}", to=data['rcver'])
 
 @socketio.on('disconnect')
 def handle_disconnect():
