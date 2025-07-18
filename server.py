@@ -37,12 +37,15 @@ def generate_number():
 
 
 @socketio.on('users')
-def list_users(parameter=False):
+def list_users(data=None):
+    if data is None:
+        data = ''
+    
     user_list = list(users.values())
     send(f"[SERVER] Active users: {', '.join(user_list)}", to=request.sid)
-    if parameter == 'start':
-        data = {'clients': users}
-        socketio.emit("private_message", data)
+    
+    if data == 'start':
+        socketio.emit("private_message", {'clients': users})
         
 @socketio.on('send_dm')   
 def send_dm_msg(data):
