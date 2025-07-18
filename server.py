@@ -46,7 +46,8 @@ def list_users(data=None):
     
     if data == 'start':
         print('emit success DMs')
-        socketio.emit("private_message", {'clients': users})
+        socketio.emit("private_message", {'clients': users}, to=request.sid)
+
         
 @socketio.on('send_dm')   
 def send_dm_msg(data):
