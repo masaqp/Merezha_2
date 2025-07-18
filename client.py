@@ -1,35 +1,37 @@
-import socket
-import threading
+import socketio
 
-HOST = 'your-render-server-url'  # e.g. 'my-app-name.onrender.com'
-PORT = 10000
+RENDER_SERVER_URL = 'https://merezha-2.onrender.com'
+USERNAME = input("Choose your username: ")
 
-def receive_messages(sock):
+sio = socketio.Client()
+
+@sio.event
+def connect():
+    print("[✔️] Connected to server.")
+    sio.emit("set_username", USERNAME)
+
+@sio.on('message')
+def on_message(data):
+    print(data)
+
+@sio.event
+def disconnect():
+    print("[❌] Disconnected.")
+
+try:
+    print(f"[...] Connecting to {RENDER_SERVER_URL} ...")
+    sio.connect(RENDER_SERVER_URL)
+except Exception as e:
+    print("[‼️] Connection failed:", e)
+    exit()
+
+try:
     while True:
-        try:
-            message = sock.recv(1024).decode()
-            if message:
-                print(message)
-        except:
-            print("Connection closed.")
+        msg = input()
+        if msg.lower() == "exit":
             break
-
-def main():
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((HOST, PORT))
-
-    thread = threading.Thread(target=receive_messages, args=(sock,))
-    thread.start()
-
-    print("Connected to the chat server. Type messages below:")
-    try:
-        while True:
-            msg = input()
-            if msg.lower() == "exit":
-                break
-            sock.sendall(msg.encode())
-    finally:
-        sock.close()
-
-if __name__ == "__main__":
-    main()
+        sio.send(msg)
+except KeyboardInterrupt:
+    pass
+finally:
+    sio.disconnect()
