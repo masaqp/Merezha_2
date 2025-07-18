@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: python-socket-server
+    name: websocket-server
     env: python
     buildCommand: ""
     startCommand: python server.py

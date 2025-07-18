@@ -1,44 +1,20 @@
-import socket
-import threading
+from flask import Flask, render_template
+from flask_socketio import SocketIO, send
+import os
 
-HOST = '0.0.0.0'  # For external access on Render
-PORT = 10000      # You can choose any open port
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app, cors_allowed_origins='*')  # allow any client
 
-clients = []
+@app.route('/')
+def index():
+    return 'WebSocket server is running.'
 
-def handle_client(conn, addr):
-    print(f"[NEW CONNECTION] {addr} connected.")
-    clients.append(conn)
+@socketio.on('message')
+def handle_message(msg):
+    print(f"Received message: {msg}")
+    send(msg, broadcast=True)
 
-    try:
-        while True:
-            data = conn.recv(1024)
-            if not data:
-                break
-            message = f"{addr}: {data.decode()}"
-            print(message)
-
-            # Broadcast to all clients
-            for client in clients:
-                if client != conn:
-                    client.sendall(message.encode())
-    finally:
-        print(f"[DISCONNECTED] {addr}")
-        clients.remove(conn)
-        conn.close()
-
-def start():
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind((HOST, PORT))
-    server.listen()
-    print(f"[LISTENING] Server is running on port {PORT}")
-
-    while True:
-        conn, addr = server.accept()
-        thread = threading.Thread(target=handle_client, args=(conn, addr))
-        thread.start()
-        print(f"[ACTIVE CONNECTIONS] {threading.active_count() - 1}")
-
-if __name__ == "__main__":
-    print("[STARTING] Server is starting...")
-    start()
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    socketio.run(app, host='0.0.0.0', port=port)
