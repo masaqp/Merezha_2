@@ -6,36 +6,35 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, cors_allowed_origins='*')
 
-# Store usernames by session ID
+# Зберігаємо імена користувачів за session ID
 users = {}
 
 @app.route('/')
 def index():
-    return 'WebSocket server with usernames is running.'
+    return 'Сервер працює!'
 
 @socketio.on('connect')
 def handle_connect():
-    print(f"[CONNECTED] Client: {request.sid}")
+    print(f"[ПІДКЛЮЧЕННЯ] Клієнт: {request.sid}")
 
 @socketio.on('set_username')
 def handle_set_username(username):
     users[request.sid] = username
-    print(f"[USERNAME SET] {request.sid} is now '{username}'")
-    send(f"{username} has joined the chat.", broadcast=True)
+    print(f"[ІМʼЯ ВСТАНОВЛЕНО] {request.sid} тепер '{username}'")
+    send(f"{username} приєднався до чату.", broadcast=True)
 
 @socketio.on('message')
 def handle_message(msg):
-    username = users.get(request.sid, "Anonymous")
+    username = users.get(request.sid, "Анонім")
     full_msg = f"{username}: {msg}"
-    print(f"[MESSAGE] {full_msg}")
+    print(f"[ПОВІДОМЛЕННЯ] {full_msg}")
     send(full_msg, broadcast=True)
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    username = users.pop(request.sid, "Anonymous")
-    print(f"[DISCONNECTED] {username} ({request.sid})")
-    send(f"{username} has left the chat.", broadcast=True)
-
+    username = users.pop(request.sid, "Анонім")
+    print(f"[ВІДКЛЮЧЕННЯ] {username} ({request.sid})")
+    send(f"{username} вийшов з чату.", broadcast=True)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

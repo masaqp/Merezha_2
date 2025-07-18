@@ -1,13 +1,13 @@
 import socketio
 
 RENDER_SERVER_URL = 'https://merezha-2.onrender.com'
-USERNAME = input("Choose your username: ")
+USERNAME = input("Придумай собі прізвисько =)\n ")
 
 sio = socketio.Client()
 
 @sio.event
 def connect():
-    print("[✔️] Connected to server.")
+    print("[✔️] Підключений до серверу.")
     sio.emit("set_username", USERNAME)
 
 @sio.on('message')
@@ -16,13 +16,13 @@ def on_message(data):
 
 @sio.event
 def disconnect():
-    print("[❌] Disconnected.")
+    print("[❌] Кікнуто.")
 
 try:
-    print(f"[...] Connecting to {RENDER_SERVER_URL} ...")
+    print(f"[...] Йдемо в гості до {RENDER_SERVER_URL} ...")
     sio.connect(RENDER_SERVER_URL)
 except Exception as e:
-    print("[‼️] Connection failed:", e)
+    print("[‼️] Трабли зі з'єднанням:", e)
     exit()
 
 try:
