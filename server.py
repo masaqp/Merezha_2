@@ -36,6 +36,12 @@ def generate_number():
     send(resultNum, broadcast=True)
 
 
+@socketio.on('users')
+def list_users():
+    for user in users:
+        send(user, broadcast=True)
+
+
 @socketio.on('disconnect')
 def handle_disconnect():
     username = users.pop(request.sid, "Анонім")

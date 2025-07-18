@@ -33,6 +33,9 @@ try:
         elif msg.lower() == 'randomito':
             sio.emit("random")
             continue
+        elif msg.lower() == '/users':
+            sio.emit("users")
+            continue
         sio.send(msg)
 except KeyboardInterrupt:
     pass
