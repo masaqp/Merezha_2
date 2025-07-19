@@ -35,6 +35,10 @@ def generate_number():
     resultNum = random.randint(0,100)
     send(resultNum, broadcast=True)
 
+@socketio.on('reserved')
+def reserved():
+    send(f"Ваша кастомна функція =>", to=request.sid)
+
 
 @socketio.on('users')
 def list_users(data=None):
@@ -47,6 +51,7 @@ def list_users(data=None):
     if data == 'start':
         print('emit success DMs')
         socketio.emit("private_message", {'clients': users}, to=request.sid)
+
 
         
 @socketio.on('send_dm')   
