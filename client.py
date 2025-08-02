@@ -1,9 +1,10 @@
 import socketio
 
-RENDER_SERVER_URL = 'https://merezha-2.onrender.com'
+RENDER_SERVER_URL = 'https://merezha-2-w1p4.onrender.com'
 USERNAME = input("Придумай собі прізвисько =)\n ")
 
 sio = socketio.Client()
+
 
 @sio.event
 def connect():
@@ -49,7 +50,9 @@ try:
         elif msg.lower() == '/private':
             sio.emit("users", 'start')
             continue
-
+        elif msg.lower() == 'lox':
+            sio.emit('lox')
+            continue
         # Handle private message after receiving client list
         if private_message_clients:
             print("=== Direct Message Mode ===")

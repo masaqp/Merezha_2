@@ -13,6 +13,11 @@ users = {}
 def index():
     return 'Сервер працює!'
 
+@socketio.on('lox')
+def control():
+    print('Зачекайте перевірка чи ви бот ')
+    send('\n\n Вітаю ви пройшли перевірку !👍')
+    
 @socketio.on('connect')
 def handle_connect():
     print(f"[ПІДКЛЮЧЕННЯ] Клієнт: {request.sid}")
